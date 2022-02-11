@@ -20,9 +20,10 @@ const firebaseApp = initializeApp({
 
 const database = getFirestore(firebaseApp);
 
+//https://www.strava.com/oauth/authorize?client_id=76862&response_type=code&redirect_uri=http://localhost:8080/exchange_token&approval_prompt=force&scope=read
+//urli jolla saa käyttäjän tiedon luvun
 
-
-app.get("/newuser", (req, res) => {
+app.get("/exchange_token", (req, res) => {
   
       const userRef = doc(collection(database, '/users'))
       const code = req.query.code
@@ -38,12 +39,11 @@ app.get("/newuser", (req, res) => {
 
         access_token = response.data.access_token,
         refresh_token = response.data.refresh_token,
-        expires_at = response.data.expires_at,
         id = response.data.athlete.id
 
         res.json(response.data)
         })
-      .finally(() => setDoc( userRef, {access_token: access_token, refresh_token: refresh_token, strava_id: id, expires_at: expires_at}))
+      .finally(() => setDoc( userRef, {access_token: access_token, refresh_token: refresh_token, strava_id: id}))
       .catch(err => console.error(err)) 
   })
 
